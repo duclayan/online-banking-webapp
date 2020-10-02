@@ -7,16 +7,16 @@
     <link rel = "stylesheet" href = "index.css">
 </head>
 <body>
-    <div id = "app-container">
+    <div id = "app-container" class = "app-container">
 
         <div id = "header-area">
             <img src = "profile-picture.png" height = '150' width = '150px' >
-                <a class = "your-balance">Your Balance</a>
-                <a class = "current-money">AED 100.00</a>
+                <a class = "user-list" id = "user-list">Explore Users</a>
+                <a class = "current-money" id = 'current-money'>AED 100.00</a>
 
         </div>
 
-        <div id = "content-area">
+        <div id = "content-area" class = "content-area">
             <div id = "withdraw" class = "choice-grid">
                 <img class = "icon" src ="https://www.flaticon.com/svg/static/icons/svg/1077/1077976.svg">
                 <a class = "title">Withdraw</a>
@@ -37,6 +37,86 @@
                 <a class = "title">Get Balance</a>
             </div>
 
+        </div>
+        <!-- Modal Receiver -->
+        <div id = 'signIn' class = 'sign-in'>
+
+            <!-- First Page -->
+            <div class = 'first-page' id = 'first-page'>
+                <a class = 'sign-in-header'>You Bank</a>
+                <!-- <div class = 'sign-in-content'>
+                    Username: <input type="text" id="username" placeholder="Enter your Username"> <br>
+                </div> -->
+                <a id = 'sign-in-button' class = "sign-in-btn">Log In</a>
+                <a id = 'crt-acc-button' class = "sign-in-btn">Create Account</a>    
+            </div>
+            <!-- Sign In Page -->
+            <div id = 'sign-in-page'>
+                <a class = 'sign-in-header'> Sign In</a> <br>
+                <a class = 'display-text' id = 'sign-in-display'> sample error</a> <br>
+                Username: <input type = 'text' id = 'username' class = 'sign-in-input'>
+                Password: <input type = 'password' id = 'pass' class = 'sign-in-input'>
+                <a id = 'user-sign-in' class = 'user-sign-in'>Sign In</a>
+            </div>
+            <!-- Sign Up Page -->
+            <div id = 'sign-up-page'>
+                <a class = 'sign-in-header'>Sign Up</a> <br>
+                <a class = 'display-text' id = 'sign-up-display'> sample error</a> <br>
+                Username: <input type="text" id= 'sign-up-username' class ='acc-username'>
+                Password: <input type="password" id='password' class='acc-password'>
+                Image: <input type = "file" id = "image" class = "image">
+                Confirm Password: <input type="password" id='conf-password' class='acc-password'>
+                <a id = 'user-sign-up' class = 'user-sign-in'>Sign Up</a>
+            </div>
+        </div>
+        <!-- Modal during sign in -->
+        <div id = "myModal" class = "modal">
+            <div id ="mod-content">
+                <div id = "modal-content-1" class = 'modal-content'>
+                    <span class = "close" >&times;</span>
+                    <p class = "modal-status" id = "modal-status"></p>
+                    <p class = "modal-amount" id = "modal-amount"></p>
+                    <div id="input-container">
+                        <input type="number" id="amount" placeholder="Enter your Value"> <br>
+                        <input type="text" id="receiver" placeholder="Enter Receiver">
+                    </div>  
+                    <p id = "modal-title">Deposit</p>
+                </div>
+
+                <div id = "modal-content-2" class = "modal-content">
+                    <span class = "close" >&times;</span>
+                    <p></p>
+                    <ul id = 'output-list'>
+                        <li>
+                            <img src = "profile-picture.png" height = "40px" width = "40px">
+                            <a>@dominique</a>
+                            <a class = 'user-balance'>1200 AED</a>
+                        </li>
+                        <li>
+                            <img src = "profile-picture.png" height = "40px" width = "40px">
+                            <a>@sharafath</a>
+                            <a class = 'user-balance'>1200 AED</a>
+                        </li>
+                        <li>
+                            <img src = "profile-picture.png" height = "40px" width = "40px">
+                            <a>@ariel</a>
+                            <a class = 'user-balance'>1200 AED</a>
+                        </li>
+                        <li>
+                            <img src = "profile-picture.png" height = "40px" width = "40px">
+                            <a>@khizar</a>
+                            <a class = 'user-balance'>1200 AED</a>
+                        </li>
+                        <li>
+                            <img src = "profile-picture.png" height = "40px" width = "40px">
+                            <a>@imran</a>
+                            <a class = 'user-balance'>1200 AED</a>
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
         </div>
     </div>
     
