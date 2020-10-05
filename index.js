@@ -162,7 +162,7 @@ document.onclick = function(event) {
             };
             //ADDING IMAGE
             let list = document.getElementById('output-list')
-            this.image = image
+            this.image = `data:image/png;base64,`
             let newHTML = 
             `<li> 
             <img src = '${this.image}' height = "40px" width = "40px">
@@ -254,12 +254,20 @@ document.getElementById('image').addEventListener('change', function() {
     reader.addEventListener('load', () => {
         localStorage.setItem('recent-image', reader.result);
     });
+    console.log(this.files[0])
+    const base64  = btoa(this.files[0])
+    console.log(base64)
+    
+    var imageLink = `<img href= data:image/png;base64,${base64}>`
+    console.log(imageLink)
+    console.log(reader.readAsDataURL(this.files[0]))
+    document.getElementById('sign-up-page').insertAdjacentHTML('beforeend',imageLink)
 
-    reader.readAsDataURL(this.files[0]);
+    // reader.readAsDataURL(this.files[0]);
 
-    const recentImageDataUrl = localStorage.getItem('recent-image');
-    if (recentImageDataUrl) {
-        console.log (recentImageDataUrl)
-        currentUser.addUser(recentImageDataUrl)
-    }
+    // const recentImageDataUrl = localStorage.getItem('recent-image');
+    // if (recentImageDataUrl) {
+    //     console.log (recentImageDataUrl)
+    //     currentUser.addUser(recentImageDataUrl)
+    // }
 });
