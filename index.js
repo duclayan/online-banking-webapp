@@ -5,38 +5,44 @@ var rcv = document.getElementById('receiver');
 var input = document.getElementById('amount')
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
+var imageLink =''
 
 class bankUser {
-    constructor(username,balance,id,password){
+    constructor(username,balance,id,password,image){
         this.username = username;
         this.password = password;
         this.balance = balance;
         this.index = id; 
-        this.image = ''
+        this.image = image;
     };
 
     appendAccount(action,amount){
-            // console.log(`InputAmount = ${inputAmount} Current User Balance = ${currentUser.balance}`)
-            // currentUser.balance = parseFloat(currentUser.balance) + parseFloat(inputAmount)
-            // console.log(currentUser.balance)
         console.log(action)
         this.balance = (action === 'deposit') ? this.balance+=amount : this.balance-=amount;
         return this.balance;
     };
 
     checkExisting(username){
-    
-        for (let i = 1; i < user.length; i++){
-            if (username === user[i].username){
-                console.log('userFound')
-                return i
-            } 
+        
+        if (username !== '') {
+            for (let i = 1; i < user.length; i++){
+                if (username === user[i].username){
+                    console.log('userFound')
+                    return i
+                } 
+            }
+            return false
+        } else {
+            return false
         }
-        return false
     }
 
     isValidPassword(pass1,pass2){
-        return (pass1 == pass2) ? true : false;
+        if (pass1 !== '' || pass2 !=='') {
+            return (pass1 == pass2) ? true : false;
+        } else {
+            return false
+        }
     }
 
     isValidSignUp(pass1,pass2){         //returns error messages
@@ -50,26 +56,36 @@ class bankUser {
         } else if (this.isValidPassword(pass1,pass2) === false){
             outputMessage = 'ERROR: Password does not match'
             return outputMessage
-        } else {
+        } else{
             return false
-        }
+        } 
     }
 
     transferMoney(amount,recepient){
 
         let i = this.checkExisting(recepient)
-        var isEnoughBalance = (this.amount > amount) ? true : false;
+        var isEnoughBalance = (this.balance > amount) ? true : false;
         console.log(isEnoughBalance)
-        if (i !== false && isEnoughBalance === true) {
-            user[i].balance += amount
-            this.balance -= amount
-        }else if (i === false && isEnoughBalance ===false) {
-            document.getElementById('modal-status').innerHTML = "Insufficient Balance and Invalid User"
-        } else if (i === false) {
-            document.getElementById('modal-status').innerHTML = "User does not exist"
-        } else if ( isEnoughBalance === false) {
-            document.getElementById('modal-status').innerHTML = "Insufficient Balance"
-        } 
+
+        if (amount != NaN) {
+            if (i !== false && isEnoughBalance === true) {
+                console.log("Success in transfer")
+                user[i].balance += amount
+                this.balance -= amount
+            }else{
+                console.log("Fail to transfer")
+                document.getElementById('modal-status').style.display = 'block'
+                if  (i === false && isEnoughBalance ===false) {
+                    alert("Insufficient Balance and Invalid User")
+                } else if (i === false) {
+                    alert("User does not exist")
+                } else if ( isEnoughBalance === false) {
+                    alert("Insufficient Balance") 
+                } 
+            }
+        }
+        list.innerHTML =''
+        this.updateUserList()
     }
 
     displayItems(stat){
@@ -88,7 +104,23 @@ class bankUser {
     </li>`
     list.insertAdjacentHTML('beforeend',newHTML)
     }
-
+updateUserList() {
+    // list.innerHTML =''
+    for (let i = 1 ; i < user.length; i++){
+        console.log(user[i])
+        // let image = 'profile-picture.png'
+        let newHTML = 
+        `<li> 
+        <img src = '${user[i].image}' height = "40px" width = "40px">
+        <a> ${user[i].username} </a>
+        <a class = user-balance> ${user[i].balance} </a>
+        </li>`
+    
+        list.insertAdjacentHTML('beforeend',newHTML)
+        console.log('success')
+    }
+    
+}
 }
 
 
@@ -97,12 +129,19 @@ class bankUser {
 var user = [];
 var currentUser = '';
 var previousAction = '';
-user[1] = new bankUser ('Merry',20,1,'0123')
-currentUser = user[1]
-// When the user clicks the button, open the modal 
-document.onclick = function(event) {
+user[1] = new bankUser ('Merry', 20, 1, '0123', 'profile-picture.png')
+user[2] = new bankUser ('John', 250, 2, '1111', 'profile-picture.png')
+user[3] = new bankUser ('Victor', 250, 3, '1111', 'profile-picture.png')
+user[4] = new bankUser ('Pau', 250, 4, '1111', 'profile-picture.png')
+user[5] = new bankUser ('Analyn', 250, 5, '1111', 'profile-picture.png')
 
-    var recevier = rcv.value
+list = document.getElementById('output-list')
+// Add all the users to the list 
+currentUser = user[1]
+currentUser.updateUserList()
+// When the user clicks the button, open the modal 
+
+document.onclick = function(event) {
     current= event.target  
     var action = ""
     var stat = true
@@ -122,18 +161,23 @@ document.onclick = function(event) {
             showpage= 'sign-up-page'
             break;
         case 'user-sign-in':
+            // user input the username and password
             var username = document.getElementById('username').value;
             var pass1 = document.getElementById('pass').value;
-            console.log(`username: ${username} password: ${pass1}`)
-            console.log(`this is the username : ${username}`)
+            // system checks whether username is existing
             let userCheck = currentUser.checkExisting(username)
-            console.log(`this is the current user: ${userCheck}`)
-            console.log(user[userCheck])
-            if (userCheck !== false && user[userCheck].password === pass1) {
 
+            // check if valid account
+            if (userCheck !== false && user[userCheck].password === pass1) {
+                console.log("successful")
                 currentUser = user[userCheck]
+                
                 showpage = 'close'
-            } 
+                document.getElementById('header-image').src =currentUser.image
+            } else {
+                showpage = 'stay'
+                alert("Invalid Account")
+            }
             break;
         case 'user-sign-up':
             // INPUT username, password, and password verification
@@ -143,35 +187,42 @@ document.onclick = function(event) {
             // var image = document.getAnimations('image').value;
             // console.log(`this is the image ${image}`)
             // INSTANTIATE newUser
+            console.log(`Username: ${username}, Pass1: ${pass1}, Pass2: ${pass2}`)
             id = user.length
             user.push(username)
             user[id] = new bankUser(username, 0,id);
 
             
             // VALIDATION CHECK: Password Match & Existinguser
-            if (user[id].isValidSignUp(pass1,pass2) === false) {
-                currentUser = user[id];
-                currentUser.password = pass1
-                showpage = 'close';
-            } else {
-                var currentDisplay = document.getElementById('sign-up-display');        // takes current display div
-
+            var currentDisplay = document.getElementById('sign-up-display');        // takes current display div
+            if (user[id].isValidSignUp(pass1,pass2) !== false) {
+                alert(`${user[id].isValidSignUp(pass1,pass2)} `)
                 currentDisplay.style.display = 'block';
                 currentDisplay.innerHTML = user[id].isValidSignUp(pass1,pass2);
                 user.pop(); 
+                showpage = 'stay'
+            } else {
+                alert("Valid Input")
+
+                currentUser = user[id];
+                currentUser.password = pass1
+                showpage = 'close'; 
             };
             //ADDING IMAGE
             let list = document.getElementById('output-list')
-            this.image = `data:image/png;base64,`
+            // currentUser.image = `data:image/png;base64,`
+            currentUser.image = imageLink
             let newHTML = 
             `<li> 
-            <img src = '${this.image}' height = "40px" width = "40px">
-            <a> ${this.username} </a>
-            <a class = user-balance> ${this.balance} </a>
+            <img src = '${currentUser.image}' height = "40px" width = "40px">
+            <a> ${currentUser.username} </a>
+            <a class = user-balance> ${currentUser.balance} </a>
             </li>`
             list.insertAdjacentHTML('beforeend',newHTML)
             
             console.log(currentUser.image)
+            document.getElementById('header-image').src =currentUser.image
+            document.getElementById('current-money').innerHTML = currentUser.balance
             break;
         case 'deposit':
             // Get curent amount
@@ -183,7 +234,8 @@ document.onclick = function(event) {
             break;
         case 'get-balance':
             currentUser.displayItems('none')
-            document.getElementById("modal-amount").innerHTML = "100.00"
+            document.getElementById("modal-amount").style.display = 'block';
+            document.getElementById("modal-amount").innerHTML = currentUser.balance
 
             break;
         case 'submit':
@@ -195,7 +247,7 @@ document.onclick = function(event) {
             } else if (previousAction === 'send-money'){
                 currentUser.transferMoney(inputAmount,recepient)
             }
-
+            action = 'close-window'
             moneyDisplay.innerHTML = currentUser.balance +'.00'
             break;
         case 'user-list':
@@ -205,6 +257,7 @@ document.onclick = function(event) {
             showpage = 'first-page'
             break;
         default :
+        showpage = 'stay'
             stat = false
             break;
     }
@@ -213,24 +266,21 @@ document.onclick = function(event) {
         console.log('User List Should Appear')
         modal.style.display = 'block'
         document.getElementById('modal-content-2').style.display = 'flex';
-    } else if (showpage !== 'close' && showpage !== ''){ 
+    } else if (showpage !== 'close' && showpage !== '' && showpage !== 'stay'){ 
         // display sign-in and sign-up modal
         document.getElementById(`${showpage}`).style.display = 'block';
     } else if(showpage == 'close') {
         // closes sign-in and sign-up modal
         document.getElementById('signIn').style.display = 'none';
-    } else {
-        ;
-        // work with depost,withdraw,get balance, send money
-        if (stat === true && showpage === '') {
-            console.log('regular display')
-            document.getElementById('modal-title').innerHTML = action
-            modal.style.display = 'block'
-            document.getElementById('modal-content-1').style.display = 'flex';
-         } else {
-            stat = false;
-        }
+    } else  if (stat === true && showpage === '') {
+        console.log('regular display')
+        document.getElementById('modal-title').innerHTML = action
+        modal.style.display = 'block'
+        document.getElementById('modal-content-1').style.display = 'flex';
+     } else {
+        stat = false;
     }
+    
     
     if (action === "deposit" || action === 'withdraw' || action === 'send-money'){
         previousAction = action;
@@ -238,36 +288,24 @@ document.onclick = function(event) {
         console.log(`Saved Previous Action: ${previousAction}`)
     }
 
-    if (event.target.className === 'close') {
+    if (event.target.className === 'close'|| action === 'close-window') {
+        console.log("close")
         modal.style.display = "none";
         rcv.style.display = "none";
         currentUser.displayItems('block')
         input.value = null
         document.getElementById('modal-content-1').style.display = 'none';
         document.getElementById('modal-content-2').style.display = 'none';
+        document.getElementById('modal-status').style.display = 'none';
+        document.getElementById("modal-amount").style.display = 'none';
     }
 }
-document.getElementById('image').addEventListener('change', function() {
-    // Converts to data url
-    const reader = new FileReader()
 
-    reader.addEventListener('load', () => {
-        localStorage.setItem('recent-image', reader.result);
-    });
-    console.log(this.files[0])
-    const base64  = btoa(this.files[0])
-    console.log(base64)
-    
-    var imageLink = `<img href= data:image/png;base64,${base64}>`
-    console.log(imageLink)
-    console.log(reader.readAsDataURL(this.files[0]))
-    document.getElementById('sign-up-page').insertAdjacentHTML('beforeend',imageLink)
-
-    // reader.readAsDataURL(this.files[0]);
-
-    // const recentImageDataUrl = localStorage.getItem('recent-image');
-    // if (recentImageDataUrl) {
-    //     console.log (recentImageDataUrl)
-    //     currentUser.addUser(recentImageDataUrl)
-    // }
-});
+// Add image during sign up
+window.addEventListener('load', function () {
+    document.getElementById('image').addEventListener('change',function() {
+        if (this.files && this.files[0]) {
+            imageLink = URL.createObjectURL(this.files[0]);
+        }
+    })
+})
